@@ -12,7 +12,7 @@ end
 
 # 1. Merge Feature Branch
 system( "git checkout dev" )
-system( "git merge #{feature_branch}" )
+system( "git merge #{feature_branch} -m 'Merge #{feature_branch} to dev'" )
 
 # 2. Increment version number in the file and check in
 new_version = increment_version

@@ -1,44 +1,55 @@
 #!/usr/bin/ruby
 
-feature_branch = ARGV[0]
+if ARGV.length != 2
+  print_usage
+  exit
+end
+
 release_branch = ARGV[0]
 message = ARGV[1]
 
+if (release_branch == nil || release_branch.empty?)
+  print_usage
+  exit
+end
+
+if (message == nil || message.empty?)
+  print_usage
+  exit
+end
+
+release_branch = release_branch.strip
+message = message.strip
+
 puts "Release branch #{release_branch}"
 
-# 1. Merge Release Branch
+# 1. Merge release branch to master, and push to origin
+puts "Merging release branch #{release_branch} to master"
 system( "git checkout master" )
-system( "git merge #{release_branch}" )
+system( "git merge #{release_branch} -m 'Merge #{release_branch}' " )
+system( "git push origin master" )
+
+# 2. Add Tag to master
+puts "Add Tag to master"
+version = File.open("version", "rb").read.strip
+tag = "Version #{version}, #{message}"
+system( "git tag -a v#{version} -m '#{tag}'" )
+system( "git push --tags" )
 
 
-
-system( "git add ." )
-system( "git commit -m 'increment version # to #{new_version}'" )
+# 3. Merge release branch to Dev
+puts "Merging release branch to Dev"
+system( "git checkout dev" )
+system( "git merge  #{release_branch} -m 'Merge #{release_branch} to dev' " )
 system( "git push origin dev" )
 
-# 3. Create a release branch and push to origin
-release_branch = "release/v#{new_version}"
-puts "Create release branch: #{release_branch}"
-system(" git checkout -b #{release_branch}" )
-system(" git push origin #{release_branch}" )
+# 4. Back to master
+system( "git checkout master" )
 
-
-
-BEGIN {
-def increment_version
-  version_string = File.open("version", "rb").read
-  version_string = version_string.strip
-  puts "old version: #{version_string}"
-  version_components = version_string.split(".")
-  puts version_components[0]
-  new_middle_digit = version_components[1].to_i + 1
-  puts "old middle digit #{version_components[1]}"
-  puts "new middle digit #{new_middle_digit}"
-  puts version_components[2]
-  new_version = "#{version_components[0]}.#{new_middle_digit}.#{version_components[2]}"
-  puts "new version: #{new_version}"
-  File.write('version', new_version)
-  new_version
+BEGIN{
+def print_usage
+  puts "Please put release branch in argument 1"
+  puts "Please put message in argument 2"
+  puts 'Usage: ruby ./release_addition.rb release/v1.0.0 "Blah Blah Blah...."'
 end
 }
-

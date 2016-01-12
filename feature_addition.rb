@@ -3,7 +3,7 @@ feature_branch = ARGV[0]
 
 puts "Feature branch #{feature_branch}"
 
-if feature_branch == nil or feature_branch.blank?
+if (feature_branch == nil || feature_branch.empty?)
   puts "Please put a feature branch in argument 1"
   puts "Usage: ./ruby feature_addition.rb feature/branchA"
   exit

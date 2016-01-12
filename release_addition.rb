@@ -1,21 +1,16 @@
 #!/usr/bin/ruby
+
 feature_branch = ARGV[0]
+release_branch = ARGV[0]
+message = ARGV[1]
 
-puts "Feature branch #{feature_branch}"
+puts "Release branch #{release_branch}"
 
-if feature_branch == nil or feature_branch.blank?
-  puts "Please put a feature branch in argument 1"
-  puts "Usage: ./ruby feature_addition.rb feature/branchA"
-  exit
-end
+# 1. Merge Release Branch
+system( "git checkout master" )
+system( "git merge #{release_branch}" )
 
 
-# 1. Merge Feature Branch
-system( "git checkout dev" )
-system( "git merge #{feature_branch}" )
-
-# 2. Increment version number in the file and check in
-new_version = increment_version
 
 system( "git add ." )
 system( "git commit -m 'increment version # to #{new_version}'" )
@@ -26,9 +21,6 @@ release_branch = "release/v#{new_version}"
 puts "Create release branch: #{release_branch}"
 system(" git checkout -b #{release_branch}" )
 system(" git push origin #{release_branch}" )
-
-# 4. Back to DEV
-system( "git checkout dev" )
 
 
 

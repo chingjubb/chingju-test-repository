@@ -1,3 +1,4 @@
+#!/usr/bin/ruby
 feature_branch = ARGV[0]
 
 puts "Feature branch #{feature_branch}"
@@ -16,13 +17,13 @@ system( "git push origin dev" )
 
 # 3. Create a release branch and push to origin
 release_branch = "release/v#{new_version}"
-
+puts "Create release branch: #{release_branch}"
 system(" git checkout -b #{release_branch}" )
 system(" git push origin #{release_branch}" )
 
 
 
-
+BEGIN {
 def increment_version
   version_string = File.open("version", "rb").read
   version_string = version_string.strip
@@ -38,5 +39,5 @@ def increment_version
   File.write('version', new_version)
   new_version
 end
-
+}
 

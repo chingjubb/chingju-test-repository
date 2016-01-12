@@ -36,15 +36,11 @@ BEGIN {
 def increment_version
   version_string = File.open("version", "rb").read
   version_string = version_string.strip
-  puts "old version: #{version_string}"
+  puts "Old version: #{version_string}"
   version_components = version_string.split(".")
-  puts version_components[0]
   new_middle_digit = version_components[1].to_i + 1
-  puts "old middle digit #{version_components[1]}"
-  puts "new middle digit #{new_middle_digit}"
-  puts version_components[2]
   new_version = "#{version_components[0]}.#{new_middle_digit}.#{version_components[2]}"
-  puts "new version: #{new_version}"
+  puts "New version: #{new_version}"
   File.write('version', new_version)
   new_version
 end
